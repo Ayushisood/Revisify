@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+// import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/Layout/Layout";
+import { ThemeProvider } from "styled-components";
+import { GlobalStyle } from "./styles/globalStyles";
+import { darkTheme, lightTheme } from "./styles/themes";
+import { Topics } from "./topics";
+import { TopicList } from "./components/TopicList/TopicList";
+
+export const ThemeContext = React.createContext(null);
 
 function App() {
+  const [theme, setTheme] = useState("light");
+  const themeStyle = theme === "light" ? lightTheme : darkTheme;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeContext.Provider value={{ setTheme, theme }}>
+      <ThemeProvider theme={themeStyle}>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              {/* Dashboard */}
+              <Route path="/" element="Dashboard" />
+              <Route path="/dashboard" element="Dashboard" />
+
+              {/* Pages */}
+              <Route path="/topics" element={<Topics />} />
+              <Route path="/topics/:topic" element={<TopicList />}/>
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </ThemeProvider>
+    </ThemeContext.Provider>
   );
 }
 
